@@ -1,3 +1,7 @@
+2013-04-15 - 0.1.0
+* Update README and use markdown.
+* Switch to 2-space indent.
+
 2012-09-19 - 0.0.2
 * Add SELinux support when using unix sockets.
 
