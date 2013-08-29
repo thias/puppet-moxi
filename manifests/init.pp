@@ -35,6 +35,9 @@ class moxi (
   # TODO Gentoo : $rpmbasename = 'moxi-server_x86_64_1.7.2',
   # init.d/moxi options - see moxi -h
   $options = '',
+  $cron_restart = false,
+  $cron_restart_hour = '04',
+  $cron_restart_minute = '00',
   # moxi-cluster.cfg options
   $cluster_url,
   # moxi.cfg options
@@ -118,6 +121,20 @@ class moxi (
     ensure    => running,
     hasstatus => true,
     require   => Package['moxi-server'],
+  }
+
+  if $cron_restart {
+    cron { 'moxi-restart':
+      command => '/sbin/service moxi-server restart >/dev/null',
+      user    => 'root',
+      hour    => $cron_restart_hour,
+      minute  => $cron_restart_minute,
+    }
+  } else {
+    cron { 'moxi-restart':
+      user   => 'root',
+      ensure => absent,
+    }
   }
 
 }
