@@ -37,7 +37,7 @@ class moxi (
   $options = '',
   $cron_restart = false,
   $cron_restart_hour = '04',
-  $cron_restart_minute = '00',
+  $cron_restart_minute = fqdn_rand(60),
   # moxi-cluster.cfg options
   $cluster_url,
   # moxi.cfg options
