@@ -1,4 +1,6 @@
+2013-11-05 - 0.1.2
 * Add cron_restart, useful to enable when noticing memory leaks.
+* Add syntax highlighting to README.
 
 2013-04-19 - 0.1.1
 * Use @varname syntax in templates to silence puppet 3.2 warnings.
