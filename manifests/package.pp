@@ -50,7 +50,7 @@ class moxi::package (
       group  => 'bin',
       mode   => '0755',
       source => "puppet:///modules/${module_name}/moxi-init.d",
-      before => Service['moxi-server'],
+      notify => Service['moxi-server'],
     }
     file { '/etc/sysconfig/moxi-server':
       owner   => 'root',

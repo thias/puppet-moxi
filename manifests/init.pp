@@ -83,12 +83,19 @@ class moxi (
 
   # We make the directory writeable by moxi so that we can dump pid, log,
   # sock... ugly, yeah.
-  file { '/opt/moxi':
-    ensure  => directory,
-    owner   => 'moxi',
-    group   => 'moxi',
-    mode    => '0755',
+  # Don't use 'file' since the resource would then be the parent of others,
+  # and create a dependency loop... also ugly, yup.
+  exec { 'chown moxi:moxi /opt/moxi':
+    unless  => 'test -d /opt/moxi && [ "`stat -c %U:%G /opt/moxi`" == "moxi:moxi" ]',
+    path    => [ '/bin', '/usr/bin' ],
     require => Class['::moxi::package'],
+    before  => Service['moxi-server'],
+  }
+  exec { 'chmod 755 /opt/moxi':
+    unless  => 'test -d /opt/moxi && [ "`stat -c %a /opt/moxi`" == "755" ]',
+    path    => [ '/bin', '/usr/bin' ],
+    require => Class['::moxi::package'],
+    before  => Service['moxi-server'],
   }
   file { '/etc/logrotate.d/moxi':
     owner   => 'root',
