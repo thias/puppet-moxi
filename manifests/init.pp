@@ -32,7 +32,9 @@
 #  include moxi
 #
 class moxi (
-  # TODO Gentoo : $rpmbasename = 'moxi-server_x86_64_1.7.2',
+  # Gentoo
+  $rpmlocation = 'http://packages.couchbase.com/releases/1.8.1',
+  $rpmbasename = 'moxi-server_x86_64_1.8.1', # without .rpm extension
   # init.d/moxi options - see moxi -h
   $options = '',
   $cron_restart = false,
@@ -54,57 +56,45 @@ class moxi (
   $connect_retry_interval = '30000',
   $connect_timeout = '400',
   $auth_timeout = '100',
-  $cycle = '200'
+  $cycle = '200',
 ) {
 
-  package { 'moxi-server': ensure => installed }
-
-  # TODO Gentoo : /etc/init.d/moxi & /etc/conf.d/moxi
+  class { '::moxi::package':
+    rpmlocation => $rpmlocation,
+    rpmbasename => $rpmbasename,
+    options     => $options,
+  }
 
   # The main configuration files
   file { '/opt/moxi/etc/moxi.cfg':
     owner   => 'moxi',
     group   => 'moxi',
-    content => template('moxi/moxi.cfg.erb'),
-    require => Package['moxi-server'],
+    content => template("${module_name}/moxi.cfg.erb"),
+    require => Class['::moxi::package'],
     notify  => Service['moxi-server'],
   }
   file { '/opt/moxi/etc/moxi-cluster.cfg':
     owner   => 'moxi',
     group   => 'moxi',
-    content => template('moxi/moxi-cluster.cfg.erb'),
-    require => Package['moxi-server'],
+    content => template("${module_name}/moxi-cluster.cfg.erb"),
+    require => Class['::moxi::package'],
     notify  => Service['moxi-server'],
   }
 
   # We make the directory writeable by moxi so that we can dump pid, log,
   # sock... ugly, yeah.
   file { '/opt/moxi':
+    ensure  => directory,
     owner   => 'moxi',
     group   => 'moxi',
     mode    => '0755',
-    ensure  => directory,
-    require => Package['moxi-server'],
+    require => Class['::moxi::package'],
   }
   file { '/etc/logrotate.d/moxi':
-    content => template('moxi/logrotate.d/moxi.erb'),
-  }
-
-  # The rpm package's init script cannot add command-line options :-(
-  if $::operatingsystem =~ /RedHat|CentOS|Fedora/ {
-    file { '/etc/sysconfig/moxi-server':
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => "OPTIONS=\"${options}\"\n",
-    }
-    file { '/opt/moxi/etc/moxi-init.d':
-      owner  => 'bin',
-      group  => 'bin',
-      mode   => '0755',
-      source => "puppet:///modules/${module_name}/moxi-init.d",
-      before => Service['moxi-server'],
-    }
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template("${module_name}/logrotate.d/moxi.erb"),
   }
 
   # The package should take care of the user, this will tweak if needed
@@ -113,14 +103,13 @@ class moxi (
     home    => '/opt/moxi',
     shell   => '/sbin/nologin',
     system  => true,
-    require => Package['moxi-server'],
   }
 
   service { 'moxi-server':
-    enable    => true,
     ensure    => running,
+    enable    => true,
     hasstatus => true,
-    require   => Package['moxi-server'],
+    require   => Class['::moxi::package'],
   }
 
   if $cron_restart {

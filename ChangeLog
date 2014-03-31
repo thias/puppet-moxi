@@ -1,3 +1,6 @@
+* Add Gentoo support, by downloading and unpacking an rpm file.
+* Split package (and Gentoo exec) into package.pp.
+
 2013-11-05 - 0.1.2
 * Add cron_restart, useful to enable when noticing memory leaks.
 * Add syntax highlighting to README.
