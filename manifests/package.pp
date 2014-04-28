@@ -46,11 +46,12 @@ class moxi::package (
     }
 
     file { '/opt/moxi/etc/moxi-init.d':
-      owner  => 'bin',
-      group  => 'bin',
-      mode   => '0755',
-      source => "puppet:///modules/${module_name}/moxi-init.d",
-      notify => Service['moxi-server'],
+      owner   => 'bin',
+      group   => 'bin',
+      mode    => '0755',
+      source  => "puppet:///modules/${module_name}/moxi-init.d",
+      require => Package['moxi-server'],
+      notify  => Service['moxi-server'],
     }
     file { '/etc/sysconfig/moxi-server':
       owner   => 'root',
