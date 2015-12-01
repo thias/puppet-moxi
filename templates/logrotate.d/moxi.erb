@@ -1,8 +1,11 @@
 /opt/moxi/moxi.log {
+  compress
+  copytruncate
   missingok
   notifempty
-  sharedscripts
-  postrotate
-    [ -f /opt/moxi/moxi.pid ] && /bin/kill -HUP `cat /opt/moxi/moxi.pid`
-  endscript
+  # This doesn't work, moxi doesn't support reopening its log file
+  #sharedscripts
+  #postrotate
+  #  [ -f /opt/moxi/moxi.pid ] && /bin/kill -HUP `cat /opt/moxi/moxi.pid`
+  #endscript
 }

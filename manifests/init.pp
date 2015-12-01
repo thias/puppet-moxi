@@ -113,7 +113,7 @@ class moxi (
   }
 
   service { 'moxi-server':
-    ensure    => running,
+    ensure    => 'running',
     enable    => true,
     hasstatus => true,
     require   => Class['::moxi::package'],
@@ -128,8 +128,8 @@ class moxi (
     }
   } else {
     cron { 'moxi-restart':
+      ensure => 'absent',
       user   => 'root',
-      ensure => absent,
     }
   }
 
