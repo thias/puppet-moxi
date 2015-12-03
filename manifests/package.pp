@@ -37,6 +37,23 @@ class moxi::package (
       notify  => Service['moxi-server'],
     }
 
+  } elsif $::osfamily == 'RedHat' and versioncmp($::operatingsystemrelease, '7') >= 0 {
+
+    # Much much cleaner
+    package { 'moxi-server':
+      ensure => installed,
+      before => User['moxi'],
+    }
+
+    file { '/etc/systemd/system/moxi-server.service':
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => template("${module_name}/moxi-server.service.erb"),
+      require => Package['moxi-server'],
+      notify  => Service['moxi-server'],
+    }
+
   } else {
 
     # Much much cleaner
