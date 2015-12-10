@@ -37,23 +37,6 @@ class moxi::package (
       notify  => Service['moxi-server'],
     }
 
-  } elsif $::osfamily == 'RedHat' and versioncmp($::operatingsystemrelease, '7') >= 0 {
-
-    # Much much cleaner
-    package { 'moxi-server':
-      ensure => installed,
-      before => User['moxi'],
-    }
-
-    file { '/etc/systemd/system/moxi-server.service':
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => template("${module_name}/moxi-server.service.erb"),
-      require => Package['moxi-server'],
-      notify  => Service['moxi-server'],
-    }
-
   } else {
 
     # Much much cleaner
@@ -62,23 +45,34 @@ class moxi::package (
       before => User['moxi'],
     }
 
-    file { '/opt/moxi/etc/moxi-init.d':
-      owner   => 'bin',
-      group   => 'bin',
-      mode    => '0755',
-      source  => "puppet:///modules/${module_name}/moxi-init.d",
-      require => Package['moxi-server'],
-      notify  => Service['moxi-server'],
+    if $::osfamily == 'RedHat' and versioncmp($::operatingsystemrelease, '7') >= 0 {
+      file { '/etc/systemd/system/moxi-server.service':
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        content => template("${module_name}/moxi-server.service.erb"),
+        require => Package['moxi-server'],
+        notify  => [
+          Service['moxi-server'],
+          Exec['systemctl daemon-reload'],
+        ],
+      }
+    } else {
+      file { '/opt/moxi/etc/moxi-init.d':
+        owner   => 'bin',
+        group   => 'bin',
+        mode    => '0755',
+        source  => "puppet:///modules/${module_name}/moxi-init.d",
+        require => Package['moxi-server'],
+        notify  => Service['moxi-server'],
+      }
+      file { '/etc/sysconfig/moxi-server':
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        content => "OPTIONS=\"${options}\"\n",
+        notify  => Service['moxi-server'],
+      }
     }
-    file { '/etc/sysconfig/moxi-server':
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      content => "OPTIONS=\"${options}\"\n",
-      notify  => Service['moxi-server'],
-    }
-
   }
-
 }
-
