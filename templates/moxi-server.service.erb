@@ -1,0 +1,16 @@
+[Unit]
+Description=Moxi Server
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+User=moxi
+Group=moxi
+Type=forking
+WorkingDirectory=/
+LimitNOFILE=10240
+LimitCORE=infinity
+ExecStart=/opt/moxi/bin/moxi -d <%= @options %> -P /opt/moxi/moxi.pid -Z /opt/moxi/etc/moxi.cfg -z /opt/moxi/etc/moxi-cluster.cfg
+PIDFile=/opt/moxi/moxi.pid
+
+[Install]
+WantedBy=multi-user.target
