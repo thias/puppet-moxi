@@ -1,3 +1,6 @@
+#### 2015-12-16 - 0.2.4
+* Include systemd unit file (#1, @jesusrodrigo).
+
 #### 2015-12-01 - 0.2.3
 * Fix logrotate entry by using copytruncate, moxi does not reopen its log file.
 * Use metadata.json instead of Modulefile.

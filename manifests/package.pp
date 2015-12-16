@@ -50,7 +50,7 @@ class moxi::package (
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        content => template("${module_name}/moxi-server.service.erb"),
+        source  => "puppet:///modules/${module_name}/moxi-server.service",
         require => Package['moxi-server'],
         notify  => [
           Service['moxi-server'],
@@ -66,13 +66,16 @@ class moxi::package (
         require => Package['moxi-server'],
         notify  => Service['moxi-server'],
       }
-      file { '/etc/sysconfig/moxi-server':
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        content => "OPTIONS=\"${options}\"\n",
-        notify  => Service['moxi-server'],
-      }
     }
+
+    file { '/etc/sysconfig/moxi-server':
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => "OPTIONS=\"${options}\"\n",
+      notify  => Service['moxi-server'],
+    }
+
   }
+
 }
