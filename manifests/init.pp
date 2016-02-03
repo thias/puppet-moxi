@@ -32,9 +32,6 @@
 #  include moxi
 #
 class moxi (
-  # Gentoo
-  $rpmlocation = 'http://packages.couchbase.com/releases/1.8.1',
-  $rpmbasename = 'moxi-server_x86_64_1.8.1', # without .rpm extension
   # init.d/moxi options - see moxi -h
   $options = '',
   $cron_restart = false,
@@ -59,10 +56,38 @@ class moxi (
   $cycle = '200',
 ) {
 
-  class { '::moxi::package':
-    rpmlocation => $rpmlocation,
-    rpmbasename => $rpmbasename,
-    options     => $options,
+  package { 'moxi-server':
+    ensure => 'installed',
+    before => User['moxi'],
+  }
+
+  if $::osfamily == 'RedHat' and versioncmp($::operatingsystemrelease, '7') >= 0 {
+
+    # The upstream rpm is made for RHEL6, switch it to native systemd
+    rhel::systemd::service { 'moxi-server':
+      source => "puppet:///modules/${module_name}/moxi-server.service",
+      notify => Service['moxi-server'],
+    }
+
+  } else {
+
+    file { '/opt/moxi/etc/moxi-init.d':
+      owner   => 'bin',
+      group   => 'bin',
+      mode    => '0755',
+      source  => "puppet:///modules/${module_name}/moxi-init.d",
+      require => Package['moxi-server'],
+      notify  => Service['moxi-server'],
+    }
+
+  }
+
+  file { '/etc/sysconfig/moxi-server':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => "OPTIONS=\"${options}\"\n",
+    notify  => Service['moxi-server'],
   }
 
   # The main configuration files
@@ -70,14 +95,14 @@ class moxi (
     owner   => 'moxi',
     group   => 'moxi',
     content => template("${module_name}/moxi.cfg.erb"),
-    require => Class['::moxi::package'],
+    require => Package['moxi-server'],
     notify  => Service['moxi-server'],
   }
   file { '/opt/moxi/etc/moxi-cluster.cfg':
     owner   => 'moxi',
     group   => 'moxi',
     content => template("${module_name}/moxi-cluster.cfg.erb"),
-    require => Class['::moxi::package'],
+    require => Package['moxi-server'],
     notify  => Service['moxi-server'],
   }
 
@@ -88,13 +113,13 @@ class moxi (
   exec { 'chown moxi:moxi /opt/moxi':
     unless  => 'test -d /opt/moxi && [ "`stat -c %U:%G /opt/moxi`" == "moxi:moxi" ]',
     path    => [ '/bin', '/usr/bin' ],
-    require => Class['::moxi::package'],
+    require => Package['moxi-server'],
     before  => Service['moxi-server'],
   }
   exec { 'chmod 755 /opt/moxi':
     unless  => 'test -d /opt/moxi && [ "`stat -c %a /opt/moxi`" == "755" ]',
     path    => [ '/bin', '/usr/bin' ],
-    require => Class['::moxi::package'],
+    require => Package['moxi-server'],
     before  => Service['moxi-server'],
   }
   file { '/etc/logrotate.d/moxi':
@@ -116,7 +141,6 @@ class moxi (
     ensure    => 'running',
     enable    => true,
     hasstatus => true,
-    require   => Class['::moxi::package'],
   }
 
   if $cron_restart {
@@ -134,4 +158,3 @@ class moxi (
   }
 
 }
-

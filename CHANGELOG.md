@@ -1,3 +1,7 @@
+* Remove obsolete (and now unused by me) Gentoo support.
+* Remove separate package class which existed only for special Gentoo support.
+* Fix RHEL7+ systemd service by using rhel::systemd::service.
+
 #### 2015-12-16 - 0.2.4
 * Include systemd unit file (#1, @jesusrodrigo).
 

@@ -1,13 +1,16 @@
 # puppet-moxi
 
-## Overview.
+## Overview
 
 Install, enable and configure moxi, the persistent connection proxy used with
-CouchBase. Currently works for Red Hat Enterprise Linux and Gentoo Linux.
+CouchBase. Currently works for Red Hat Enterprise Linux, possibly others.
 
-* `moxi` : Main class to manage moxi.
+* `moxi` : Main class to manage moxi-server.
 
-Example Usage
+Note that for RHEL7+ this module will require the `thias-rhel` module in
+order to manage an improved systemd service.
+
+## Examples
 
 ```puppet
 class { '::moxi':
