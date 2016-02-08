@@ -3,7 +3,8 @@
 ## Overview
 
 Install, enable and configure moxi, the persistent connection proxy used with
-CouchBase. Currently works for Red Hat Enterprise Linux, possibly others.
+CouchBase. Currently works for Red Hat Enterprise Linux, possibly others with
+minor changes.
 
 * `moxi` : Main class to manage moxi-server.
 

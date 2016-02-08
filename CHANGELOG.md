@@ -1,3 +1,4 @@
+#### 2016-02-08 - 1.0.0
 * Remove obsolete (and now unused by me) Gentoo support.
 * Remove separate package class which existed only for special Gentoo support.
 * Fix RHEL7+ systemd service by using rhel::systemd::service.
