@@ -79,6 +79,14 @@ class moxi (
       require => Package['moxi-server'],
       notify  => Service['moxi-server'],
     }
+    file { '/etc/systemd/system/moxi-server.service.d':
+      ensure  => 'directory',
+      purge   => true,
+      recurse => true,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+    }
 
   }
 
