@@ -37,6 +37,7 @@ class moxi (
   $cron_restart = false,
   $cron_restart_hour = '04',
   $cron_restart_minute = fqdn_rand(60),
+  $auto_restart = false,
   # moxi-cluster.cfg options
   $cluster_url,
   # moxi.cfg options
@@ -68,6 +69,23 @@ class moxi (
       source => "puppet:///modules/${module_name}/moxi-server.service",
       notify => Service['moxi-server'],
     }
+    file { '/etc/systemd/system/moxi-server.service.d':
+      ensure  => 'directory',
+      purge   => true,
+      recurse => true,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+    }
+    if $auto_restart {
+      file { '/etc/systemd/system/moxi-server.service.d/auto-restart.conf':
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        content => "[Service]\nRestart=on-failure\n",
+        notify  => Exec['systemctl daemon-reload'],
+      }
+    }
 
   } else {
 
@@ -78,14 +96,6 @@ class moxi (
       source  => "puppet:///modules/${module_name}/moxi-init.d",
       require => Package['moxi-server'],
       notify  => Service['moxi-server'],
-    }
-    file { '/etc/systemd/system/moxi-server.service.d':
-      ensure  => 'directory',
-      purge   => true,
-      recurse => true,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0755',
     }
 
   }
