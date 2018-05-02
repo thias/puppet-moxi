@@ -1,6 +1,6 @@
 {
   "name": "thias-moxi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Matthias Saou",
   "license": "Apache-2.0",
   "summary": "CouchBase Moxi Server module",
@@ -20,12 +20,8 @@
   ],
   "requirements": [
     {
-    "name": "pe",
-    "version_requirement": "3.x"
-    },
-    {
     "name": "puppet",
-    "version_requirement": ">=2.7.20 <4.2.0"
+    "version_requirement": ">=2.7.20 <6.0.0"
     }
   ],
   "dependencies": []

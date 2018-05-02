@@ -1,3 +1,4 @@
+#### 2018-02-02 - 1.0.1
 * Add `$auto_restart` parameter for systemd based restart on-failure.
 
 #### 2016-02-08 - 1.0.0
