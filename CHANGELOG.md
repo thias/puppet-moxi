@@ -1,3 +1,5 @@
+* Add support for `$usr` and `$pwd` in template.
+
 #### 2018-02-02 - 1.0.1
 * Add `$auto_restart` parameter for systemd based restart on-failure.
 

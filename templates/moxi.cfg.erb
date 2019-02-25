@@ -1,7 +1,17 @@
+<% if @usr -%>
+usr=<%= @usr %>,
+<% else -%>
 # usr=MEMBASE_REST_USER,
+<% end -%>
+<% if @pwd -%>
+pwd=<%= @pwd %>,
+<% else -%>
 # pwd=MEMBASE_REST_PSWD,
+<% end -%>
 port_listen=<%= @port_listen %>,
+<% if ! @pwd -%>
 default_bucket_name=<%= @default_bucket_name %>,
+<% end -%>
 downstream_max=1024,
 downstream_conn_max=4,
 downstream_conn_queue_timeout=200,
