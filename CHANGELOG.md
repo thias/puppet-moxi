@@ -1,3 +1,4 @@
+#### 2019-03-19 - 1.0.2
 * Add support for `$usr` and `$pwd` in template.
 
 #### 2018-02-02 - 1.0.1
