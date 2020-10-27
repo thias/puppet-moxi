@@ -1,3 +1,5 @@
+* Properly use all parameters in the template.
+
 #### 2019-03-19 - 1.0.2
 * Add support for `$usr` and `$pwd` in template.
 

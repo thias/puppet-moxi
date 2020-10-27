@@ -12,14 +12,14 @@ port_listen=<%= @port_listen %>,
 <% if ! @pwd -%>
 default_bucket_name=<%= @default_bucket_name %>,
 <% end -%>
-downstream_max=1024,
-downstream_conn_max=4,
-downstream_conn_queue_timeout=200,
-downstream_timeout=5000,
-wait_queue_timeout=200,
-connect_max_errors=5,
-connect_retry_interval=30000,
-connect_timeout=400,
-auth_timeout=100,
-cycle=200
+downstream_max=<%= @downstream_max %>,
+downstream_conn_max=<%= @downstream_conn_max %>,
+downstream_conn_queue_timeout=<%= @downstream_conn_queue_timeout %>,
+downstream_timeout=<%= @downstream_timeout %>,
+wait_queue_timeout=<%= @wait_queue_timeout %>,
+connect_max_errors=<%= @connect_max_errors %>,
+connect_retry_interval=<%= @connect_retry_interval %>,
+connect_timeout=<%= @connect_timeout %>,
+auth_timeout=<%= @auth_timeout %>,
+cycle=<%= @cycle %>
 
